@@ -19,7 +19,6 @@ services:
       - "9080"  # Promtail HTTP listen port
     volumes:
       - ./promtail-config.yml:/etc/promtail/promtail-config.yml  # Promtail configuration file
-      - #/home/acintyo/nginx/logs:/var/log/nginx  # Mount the Nginx log directory
     environment:
       - LOKI_URL=http://loki:3100/loki/api/v1/push
     command:
