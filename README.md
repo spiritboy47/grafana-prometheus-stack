@@ -39,13 +39,13 @@ Ensure the following files exist in the root directory:
 Customize them as needed for your setup.
 
 ### 3. Run the Stack
-docker-compose up -d
+* docker-compose up -d
 
 ### 4. Access the Tools
-Grafana: http://localhost:3000
-Default credentials: admin / admin
-Prometheus: http://localhost:9090
-Loki: http://localhost:3100
+* Grafana: http://localhost:3000
+* Default credentials: admin / admin
+* Prometheus: http://localhost:9090
+* Loki: http://localhost:3100
 
 ### 📊 Dashboards & Alerts
 Import official dashboards from Grafana.com for:
