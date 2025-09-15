@@ -1,0 +1,24 @@
+server:
+  http_listen_port: 9080
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push  # Replace <loki-server> with the actual Loki server address
+
+positions:
+  filename: /tmp/positions.yaml  # Tracks where Promtail last read from log files
+
+scrape_configs:
+  - job_name: nginx_logs
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+        labels:
+          job: nginx_logs
+          __path__: /var/log/nginx/*log       # Path to Nginx access log
+
+  - job_name: b2b-logs
+    static_configs:
+      - targets:
+          - localhost  # Static target; not used but required
+        labels:
+          job: b2b-logs
+          __path__: /var/log/b2b/*log
