@@ -1,0 +1,85 @@
+version: '3.8'
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring_network
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    restart: always
+    expose:
+      - "9080"  # Promtail HTTP listen port
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/promtail-config.yml  # Promtail configuration file
+      - #/home/acintyo/nginx/logs:/var/log/nginx  # Mount the Nginx log directory
+    environment:
+      - LOKI_URL=http://loki:3100/loki/api/v1/push
+    command:
+      - "-config.file=/etc/promtail/promtail-config.yml"
+    networks:
+      - monitoring_network
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: always
+    expose:
+      - "9100"
+    networks:
+      - monitoring_network
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    container_name: nginx-exporter
+    restart: always
+    expose:
+      - "9113"
+    command:
+      - "-nginx.scrape-uri=https://api.domain.co.in/stub_status"
+    networks:
+      - monitoring_network
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    restart: always
+    ports:
+      - "3100:3100"
+    networks:
+      - monitoring_network
+    volumes:
+      - ./loki-config.yml:/etc/loki/loki-config.yaml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring_network
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      GF_SMTP_ENABLED: "true"
+      GF_SMTP_HOST: "smtp.gmail.com:587"  # Replace with your SMTP server
+      GF_SMTP_USER: "user@gmail.com"  # Replace with your email address
+      GF_SMTP_PASSWORD: "gmail-app-password"  # Replace with your email password
+      GF_SMTP_FROM_ADDRESS: "user@gmail.com"  # Sender email address
+      GF_SMTP_FROM_NAME: "Grafana"
+      GF_SMTP_SKIP_VERIFY: "false"  # Set to true if you don't need SSL certificate verification (recommended to keep false)
+
+networks:
+  monitoring_network:
+    driver: bridge
+
+volumes:
+  grafana-data:
