@@ -28,7 +28,7 @@ A complete observability setup using Docker Compose with:
 ## 🚀 Getting Started
 
 ### 1. Clone the Repository
-git clone https://github.com/yourusername/docker-monitoring-stack.git
+git clone https://github.com/spiritboy47/grafana-prometheus-stack.git
 cd docker-monitoring-stack
 
 ### 2. Setup Configuration Files
